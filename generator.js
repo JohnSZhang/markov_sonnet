@@ -4,8 +4,13 @@ var createLine = (distribution) => {
     const firstWords = Object.keys(distribution).filter((word) => {
         return distribution[word]['backward'].indexOf('\n') !== -1;
     });
-
-    line.push(firstWords[Math.floor(Math.random() * firstWords.length)]);
+    console.log(firstWords);
+    console.log(firstWords.length);
+    const randomWordIdx = Math.floor(Math.random() * firstWords.length);
+    console.log(randomWordIdx);
+    const randomWord = firstWords[randomWordIdx];
+    console.log(randomWord);
+    line.push(randomWord);
 
     while(line[line.length - 1] !== '\n') {
         const lastWord = line[line.length - 1];
@@ -23,17 +28,18 @@ var createRLine = (rLine, distribution) => {
     let newRhyme = rhymeWords[Math.floor(Math.random(rhymeWords.length))];
 
     line.push(newRhyme);
-    while(true) {
+    var lineCompleted = false;
+    while(!lineCompleted) {
         let firstWord = line[0];
-        let newWords = distribution[firstWord].backward;
-        let word = Math.floor(Math.random(newWords.length));
+        let previousWords = distribution[firstWord].backward;
+        let word = previousWords[ Math.floor(Math.random(previousWords.length))];
         if (word === '\n') {
-            break;
+            lineCompleted = true;
         } else {
-            line.push(word);
+            line.unshift(word);
         }
-        return line.join(' ');
     }
+    return line.join(' ');
 
 };
 
