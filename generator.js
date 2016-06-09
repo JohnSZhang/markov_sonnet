@@ -21,14 +21,10 @@ var createRLine = (rLine, distribution) => {
     const rhymeWord = rLine.split(' ').slice(-2)[0];
     const rhymeWords = distribution[rhymeWord].rhymes;
     let newRhyme = rhymeWords[Math.floor(Math.random(rhymeWords.length))];
-    console.log(newRhyme);
-    console.log(distribution);
 
     line.push(newRhyme);
     while(true) {
         let firstWord = line[0];
-        console.log(firstWord);
-        console.log(distribution[firstWord]);
         let newWords = distribution[firstWord].backward;
         let word = Math.floor(Math.random(newWords.length));
         if (word === '\n') {
