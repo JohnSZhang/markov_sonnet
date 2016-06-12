@@ -1,4 +1,16 @@
-var MIN_LINE_LENGTH = 4;
+var MIN_LINE_LENGTH = 5;
+var MAX_LINE_LENGTH = 8;
+var filterNewLines = (words) => {
+    return words.filter((word) => { return word !== '\n'; });
+}
+var onlyNewLines = (words) => {
+    return words.filter((word) => { return word === '\n'; });
+}
+
+var hasNewLine = (words) => {
+    return words.find((word) => { return word === '\n'});
+}
+
 var createLine = (distribution) => {
     let line = [];
 
@@ -15,7 +27,12 @@ var createLine = (distribution) => {
         let nextWords = distribution[lastWord].forward;
         console.log(distribution[lastWord]);
         if (line.length < MIN_LINE_LENGTH) {
-            nextWords = nextWords.filter((word) => { return word !== '\n'; });
+            nextWords = filterNewLines(nextWords);
+        }
+        if (line.length > MAX_LINE_LENGTH) {
+            if (hasNewLine(nextWords)) {
+                nextWords = onlyNewLines(nextWords);
+            }
         }
         let nextWordsLength = nextWords.length;
         console.log('next words length', nextWordsLength);
@@ -43,7 +60,12 @@ var createRLine = (rLine, distribution) => {
         console.log('previous words', wordDist.backward);
         let previousWords = wordDist.backward;
         if (line.length < MIN_LINE_LENGTH) {
-            previousWords = previousWords.filter((word) => { return word !== '\n'; });
+            previousWords = filterNewLines(previousWords);
+        }
+        if (line.length > MAX_LINE_LENGTH) {
+            if (hasNewLine(previousWords)) {
+                previousWords = onlyNewLines(previousWords);
+            }
         }
         var previousWordsLength = previousWords.length;
         console.log(previousWords.length);
