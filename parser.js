@@ -1,7 +1,7 @@
 // rhyme scheme abab cdcd efef gg
 var rhymeMap = {0:2, 1:3, 2:0, 3:1, 4:6, 5:7, 6:4, 7:5, 8:10, 9:11, 10:8, 11:9, 12:13, 13:12 }
 var processWord = (word) => {
-    return word.toLowerCase().replace('!', '').replace('?', '').replace(',', '').replace('\'', '').replace(':', '').replace(';', '').replace('.','');
+    return word.toLowerCase().replace('!', '').replace('?', '').replace(',', '').replace('\'', '').replace(':', '').replace(';', '').replace('.','').replace('--', '');
 };
 var getRhymeWord = (line) => {
     return processWord(line.split(' ').splice(-1)[0]);
