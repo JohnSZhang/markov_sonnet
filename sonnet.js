@@ -26,5 +26,7 @@ fs.readFile('./data/sonnets.txt', 'utf8', (error, data) => {
     sonnets.forEach((sonnet) => {
         processSonnet(sonnet, distribution);
     });
-    console.log(generateNewSonnet(distribution));
+    /*console.log(distribution);
+    /*console.log(generateNewSonnet(distribution));*/
+    console.log(generateNewSonnet(distribution).join('\n'));
 });
