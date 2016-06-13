@@ -22,10 +22,9 @@ var createLine = (distribution) => {
     line.push(randomWord);
 
     while(line[line.length - 1] !== '\n') {
-        console.log(line);
         const lastWord = line[line.length - 1];
+        console.log(line);
         let nextWords = distribution[lastWord].forward;
-        console.log(distribution[lastWord]);
         if (line.length < MIN_LINE_LENGTH) {
             nextWords = filterNewLines(nextWords);
         }
@@ -35,9 +34,9 @@ var createLine = (distribution) => {
             }
         }
         let nextWordsLength = nextWords.length;
-        console.log('next words length', nextWordsLength);
-        console.log(nextWords);
-        let nextWord = nextWords[Math.floor(Math.random() * nextWordsLength)];
+        var newWordIndex = Math.floor(Math.random() * nextWordsLength);
+        // if we have no possible next word, we will end the line
+        let nextWord = nextWordsLength === 0 ? '\n' : nextWords[newWordIndex];
         line.push(nextWord);
     }
     return line.filter((char) => { return char !== '\n'; }).join(' ');
@@ -47,8 +46,6 @@ var createRLine = (rLine, distribution) => {
     let line = [];
     const rhymeWord = rLine.split(' ').slice(-1)[0];
     const rhymeWords = distribution[rhymeWord].rhymes;
-    console.log('rhyme word', rhymeWord);
-    console.log('rhyme words', rhymeWords);
     let newRhyme = rhymeWords[Math.floor(Math.random() * rhymeWords.length)];
 
     line.push(newRhyme);
@@ -56,8 +53,6 @@ var createRLine = (rLine, distribution) => {
     while(!lineCompleted) {
         let firstWord = line[0];
         let wordDist = Object.assign({}, distribution[firstWord]);
-        console.log('first word', firstWord);
-        console.log('previous words', wordDist.backward);
         let previousWords = wordDist.backward;
         if (line.length < MIN_LINE_LENGTH) {
             previousWords = filterNewLines(previousWords);
@@ -68,8 +63,8 @@ var createRLine = (rLine, distribution) => {
             }
         }
         var previousWordsLength = previousWords.length;
-        console.log(previousWords.length);
-        let word = previousWords[ Math.floor(Math.random() * previousWordsLength)];
+        // it is possible that we have no chioce but to terminate the line
+        let word = previousWordsLength === 0 ? '\n' : previousWords[ Math.floor(Math.random() * previousWordsLength)];
         if (word === '\n') {
             lineCompleted = true;
         } else {
