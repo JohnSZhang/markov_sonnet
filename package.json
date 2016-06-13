@@ -1,0 +1,28 @@
+{
+  "name": "markov_sonnts",
+  "version": "1.0.0",
+  "description": "a markov chain based shakesparen sonnet generator",
+  "main": "sonnet.js",
+  "scripts": {
+    "test": "node sonnet.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnSZhang/markov_sonnet.git"
+  },
+  "keywords": [
+    "sonnet",
+    "markov_chain",
+    "markov",
+    "shakespeare"
+  ],
+  "author": "Shimin John Zhang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JohnSZhang/markov_sonnet/issues"
+  },
+  "homepage": "https://github.com/JohnSZhang/markov_sonnet#readme",
+  "dependencies": {
+    "browserify": "^13.0.1"
+  }
+}

@@ -1,5 +1,5 @@
-const processSonnet = require('./parser');
-const generator = require('./generator');
+const processSonnet = require('./lib/parser');
+const generator = require('./lib/generator');
 var distribution = {};
 fs = require('fs');
 // Sonnet Data From http://lib.ru/SHAKESPEARE/sonnets.txt
@@ -26,7 +26,5 @@ fs.readFile('./data/sonnets.txt', 'utf8', (error, data) => {
     sonnets.forEach((sonnet) => {
         processSonnet(sonnet, distribution);
     });
-    /*console.log(distribution);
-    /*console.log(generateNewSonnet(distribution));*/
     console.log(generateNewSonnet(distribution).join('\n'));
 });
