@@ -3,10 +3,16 @@
     <head>
         <meta charset="utf-8">
         <title></title>
-        <script type="text/javascript" src="data/sonnets.js"></script>
-        <script type="text/javascript" src="./sonnet.js"></script>
     </head>
     <body>
-
+        <textarea id="sonnet" rows="20" cols="100"></textarea>
+        <button id="new-sonnet">Click Here For A New Sonnet</button>
+        <script type="text/javascript">
+            document.getElementById('new-sonnet').addEventListener('click', function (event) {
+                var newSonnet = window.generateSonnet();
+                document.getElementById('sonnet').innerHTML = newSonnet;
+            });
+        </script>
+        <script type="text/javascript" src="./markovs_sonnet.js"></script>
     </body>
 </html>

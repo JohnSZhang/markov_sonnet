@@ -1,3 +1,169 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+const MIN_LINE_LENGTH = 5;
+const MAX_LINE_LENGTH = 8;
+const sonnetFormat = [null, null, 0, 1, null, null, 4, 5, null, null, 8, 9, null, 12];
+
+const filterNewLines = (words) => {
+    return words.filter((word) => { return word !== '\n'; });
+}
+const onlyNewLines = (words) => {
+    return words.filter((word) => { return word === '\n'; });
+}
+
+const hasNewLine = (words) => {
+    return words.find((word) => { return word === '\n'});
+}
+
+const createLine = (distribution) => {
+    let line = [];
+    const firstWords = Object.keys(distribution).filter((word) => {
+        return distribution[word]['backward'].indexOf('\n') !== -1;
+    });
+    const randomWordIdx = Math.floor(Math.random() * firstWords.length);
+    const randomWord = firstWords[randomWordIdx];
+    line.push(randomWord);
+
+    while(line[line.length - 1] !== '\n') {
+        const lastWord = line[line.length - 1];
+        let nextWords = distribution[lastWord].forward;
+
+        if (line.length < MIN_LINE_LENGTH) {
+            nextWords = filterNewLines(nextWords);
+        }
+
+        if (line.length > MAX_LINE_LENGTH) {
+            if (hasNewLine(nextWords)) {
+                nextWords = onlyNewLines(nextWords);
+            }
+        }
+
+        let nextWordsLength = nextWords.length;
+        const newWordIndex = Math.floor(Math.random() * nextWordsLength);
+        // if we have no possible next word, we will end the line
+        let nextWord = nextWordsLength === 0 ? '\n' : nextWords[newWordIndex];
+        line.push(nextWord);
+    }
+
+    return line.filter((char) => { return char !== '\n'; }).join(' ');
+};
+
+const createRLine = (rLine, distribution) => {
+    let line = [];
+    let lineCompleted = false;
+    const rhymeWord = rLine.split(' ').slice(-1)[0];
+    const rhymeWords = distribution[rhymeWord].rhymes;
+    let newRhyme = rhymeWords[Math.floor(Math.random() * rhymeWords.length)];
+
+    line.push(newRhyme);
+
+    while(!lineCompleted) {
+        let firstWord = line[0];
+        let wordDist = Object.assign({}, distribution[firstWord]);
+        let previousWords = wordDist.backward;
+
+        if (line.length < MIN_LINE_LENGTH) {
+            previousWords = filterNewLines(previousWords);
+        }
+
+        if (line.length > MAX_LINE_LENGTH) {
+            if (hasNewLine(previousWords)) {
+                previousWords = onlyNewLines(previousWords);
+            }
+        }
+        const previousWordsLength = previousWords.length;
+        // it is possible that we have no chioce but to terminate the line
+        let word = previousWordsLength === 0 ? '\n' : previousWords[ Math.floor(Math.random() * previousWordsLength)];
+
+        if (word === '\n') {
+            lineCompleted = true;
+        } else {
+            line.unshift(word);
+        }
+    }
+    return line.join(' ');
+
+};
+
+const generateNewSonnet = (distribution) => {
+    var sonnet = [];
+    for (let i = 0; i < sonnetFormat.length; i++) {
+        if (sonnetFormat[i] === null) {
+            sonnet.push(createLine(distribution));
+        } else {
+            sonnet.push(createRLine(sonnet[sonnetFormat[i]], distribution));
+        }
+    }
+    return sonnet;
+};
+
+module.exports = {
+    generateNewSonnet: generateNewSonnet,
+};
+
+},{}],2:[function(require,module,exports){
+'use strict';
+// rhyme scheme abab cdcd efef gg
+const rhymeMap = {0:2, 1:3, 2:0, 3:1, 4:6, 5:7, 6:4, 7:5, 8:10, 9:11, 10:8, 11:9, 12:13, 13:12 }
+const processWord = (word) => {
+    // inefficient, strip out everything to make the words match more easily
+    return word.toLowerCase().replace(/[^a-z]/g,'');
+};
+
+const getRhymeWord = (line) => {
+    return processWord(line.split(' ').splice(-1)[0]);
+}
+
+const processSonnet = (sonnet, distribution) => {
+    let lines = sonnet.split('\n').filter((line) => {
+        return line.length;
+    });
+
+    lines.forEach((line, lineIdx, lines) => {
+        if (line.length) {
+            let words = line.split(' ').map(processWord);
+
+            words.forEach((word, idx, words) => {
+                let wordDist = distribution[word] || { 'forward': [], 'backward': [], 'rhymes': [] };
+                const pWord = idx === 0 ? '\n' : words[idx - 1];
+                const nWord = idx === words.length - 1 ? '\n' : words[idx + 1];
+
+                if (idx === words.length - 1) {
+                    // if we are processing the last word in the line then it must rhyme
+                    const rhymeLine = lines[rhymeMap[lineIdx]];
+                    const rWord= getRhymeWord(rhymeLine);
+                    wordDist['rhymes'].push(rWord);
+                }
+
+                wordDist['backward'].push(pWord);
+                wordDist['forward'].push(nWord);
+                distribution[word] = wordDist;
+            });
+
+        }
+
+    });
+};
+
+module.exports = processSonnet;
+
+},{}],3:[function(require,module,exports){
+const processSonnet = require('../lib/parser');
+const generator = require('../lib/generator');
+// Sonnet Data From http://lib.ru/SHAKESPEARE/sonnets.txt
+const SONNETS = require('./sonnets');
+var distribution = {};
+
+const sonnets = SONNETS.split('\n\n');
+sonnets.forEach((sonnet) => {
+    processSonnet(sonnet, distribution);
+});
+
+window.generateSonnet = () => {
+    return generator.generateNewSonnet(distribution).join('\n');
+};
+
+},{"../lib/generator":1,"../lib/parser":2,"./sonnets":4}],4:[function(require,module,exports){
 const SONNETS = `
 
 
@@ -2479,3 +2645,5 @@ For men diseased; but I, my mistress' thrall,
 Came there for cure, and this by that I prove,
 Love's fire heats water, water cools not love.`;
 module.exports = SONNETS;
+
+},{}]},{},[3]);

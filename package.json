@@ -21,8 +21,5 @@
   "bugs": {
     "url": "https://github.com/JohnSZhang/markov_sonnet/issues"
   },
-  "homepage": "https://github.com/JohnSZhang/markov_sonnet#readme",
-  "dependencies": {
-    "browserify": "^13.0.1"
-  }
+  "homepage": "https://github.com/JohnSZhang/markov_sonnet#readme"
 }
