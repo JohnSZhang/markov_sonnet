@@ -10,5 +10,5 @@ sonnets.forEach((sonnet) => {
 });
 
 window.generateSonnet = () => {
-    return generator.generateNewSonnet(distribution).join('\n');
+    return generator.generateNewSonnet(distribution).join('\n\n');
 };

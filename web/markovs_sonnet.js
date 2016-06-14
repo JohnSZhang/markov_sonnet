@@ -94,6 +94,16 @@ const generateNewSonnet = (distribution) => {
             sonnet.push(createRLine(sonnet[sonnetFormat[i]], distribution));
         }
     }
+    sonnet.forEach((line, idx) => {
+        line = line[0].toUpperCase() + line.slice(1);
+        if ((idx + 1) % 4 === 0 || idx === 13) {
+            line = line + '.';
+        } else {
+            line = line + ',';
+        }
+        line = line.replace(' i ', ' I ');
+        sonnet[idx] = line;
+    });
     return sonnet;
 };
 
@@ -160,7 +170,7 @@ sonnets.forEach((sonnet) => {
 });
 
 window.generateSonnet = () => {
-    return generator.generateNewSonnet(distribution).join('\n');
+    return generator.generateNewSonnet(distribution).join('\n\n');
 };
 
 },{"../lib/generator":1,"../lib/parser":2,"./sonnets":4}],4:[function(require,module,exports){
@@ -2503,7 +2513,7 @@ And saved my life, saying 'not you.'
 
 
 Poor soul, the centre of my sinful earth,
-[ ] these rebel powers that thee array;
+These rebel powers that thee array;
 Why dost thou pine within and suffer dearth,
 Painting thy outward walls so costly gay?
 Why so large cost, having so short a lease,

@@ -2337,7 +2337,7 @@ And saved my life, saying 'not you.'
 
 
 Poor soul, the centre of my sinful earth,
-[ ] these rebel powers that thee array;
+These rebel powers that thee array;
 Why dost thou pine within and suffer dearth,
 Painting thy outward walls so costly gay?
 Why so large cost, having so short a lease,
